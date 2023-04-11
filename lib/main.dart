@@ -67,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
           text.removeLast();
           _textResultValueController.text = text.join();
           break;
+        case "0":
         case "1":
         case "2":
         case "3":
