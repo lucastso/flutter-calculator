@@ -31,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final TextEditingController _textResultValueController;
+  String _isDividedByZero = "0";
   String _sign = "";
   String _firstNumber = "";
   String _secondNumber = "";
@@ -52,14 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void _handleButtonClick(String pressedValue) {
     setState(() {
       if (pressedValue == "C") {
-        _textResultValueController.text = "0";
+        _textResultValueController.text = "";
         _sign = "";
         _firstNumber = "";
         _secondNumber = "";
+        _isDividedByZero = "0";
       }
-
-      String removeZero = _textResultValueController.text.replaceAll("0", "");
-      _textResultValueController.text = removeZero.toString();
 
       switch (pressedValue) {
         case "<":
@@ -77,7 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
         case "7":
         case "8":
         case "9":
-          _textResultValueController.text += pressedValue;
+          if (_textResultValueController.text != "0") {
+            _textResultValueController.text += pressedValue;
+          } else {
+            return;
+          }
           break;
         case "+":
         case "-":
@@ -88,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _textResultValueController.text = "0";
           break;
         case ".":
-          if (_textResultValueController.text.split("").contains(".")) {
+          if (_textResultValueController.text.contains(".")) {
             return;
           } else {
             _textResultValueController.text += pressedValue;
@@ -97,25 +100,30 @@ class _MyHomePageState extends State<MyHomePage> {
         case "=":
           _secondNumber = _textResultValueController.text;
           if (_sign == "+") {
-            var result =
-                double.parse(_firstNumber) + double.parse(_secondNumber);
-            _textResultValueController.text = result.toString();
+            if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
+              var result =
+                  double.parse(_firstNumber) + double.parse(_secondNumber);
+              _textResultValueController.text = result.toString();
+            }
           } else if (_sign == "-") {
-            var result =
-                double.parse(_firstNumber) - double.parse(_secondNumber);
-            _textResultValueController.text = result.toString();
+            if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
+              var result =
+                  double.parse(_firstNumber) - double.parse(_secondNumber);
+              _textResultValueController.text = result.toString();
+            }
           } else if (_sign == "*") {
-            var result =
-                double.parse(_firstNumber) * double.parse(_secondNumber);
-            _textResultValueController.text = result.toString();
+            if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
+              var result =
+                  double.parse(_firstNumber) * double.parse(_secondNumber);
+              _textResultValueController.text = result.toString();
+            }
           } else if (_sign == "/") {
-            if (_secondNumber == "0") {
-              _textResultValueController.text = "Err";
-              return;
-            } else {
+            if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) / double.parse(_secondNumber);
               _textResultValueController.text = result.toString();
+              _isDividedByZero = "Err";
+              _textResultValueController.text = "Err";
             }
           }
           break;
@@ -181,9 +189,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: TextField(
                                 controller: _textResultValueController,
                                 textAlign: TextAlign.end,
-                                decoration: const InputDecoration(
-                                    hintText: "0",
-                                    hintStyle: TextStyle(
+                                decoration: InputDecoration(
+                                    hintText: _isDividedByZero,
+                                    hintStyle: const TextStyle(
                                         fontSize: 40, color: Colors.blueGrey)),
                                 style: const TextStyle(
                                     fontSize: 40, color: Colors.blueGrey),
