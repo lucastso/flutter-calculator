@@ -76,10 +76,19 @@ class _MyHomePageState extends State<MyHomePage> {
         case "7":
         case "8":
         case "9":
-          if (_textResultValueController.text != "0") {
-            _textResultValueController.text += pressedValue;
-          } else {
-            return;
+          if (_textResultValueController.text.length != 13) {
+            if (_firstNumber != "" && pressedValue == "0") {
+              _textResultValueController.text = _textResultValueController.text;
+            } else {
+              _textResultValueController.text += pressedValue;
+            }
+
+            if (_textResultValueController.text.contains("0") &&
+                pressedValue != "0") {
+              var text = _textResultValueController.text.split("");
+              text.removeWhere((element) => element == "0");
+              _textResultValueController.text = text.join();
+            }
           }
           break;
         case "+":
@@ -103,27 +112,30 @@ class _MyHomePageState extends State<MyHomePage> {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) + double.parse(_secondNumber);
-              _textResultValueController.text = result.toString();
+              _textResultValueController.text = result.toStringAsFixed(1);
             }
           } else if (_sign == "-") {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) - double.parse(_secondNumber);
-              _textResultValueController.text = result.toString();
+              _textResultValueController.text = result.toStringAsFixed(1);
             }
           } else if (_sign == "*") {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) * double.parse(_secondNumber);
-              _textResultValueController.text = result.toString();
+              _textResultValueController.text = result.toStringAsFixed(1);
             }
           } else if (_sign == "/") {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) / double.parse(_secondNumber);
-              _textResultValueController.text = result.toString();
-              _isDividedByZero = "Err";
-              _textResultValueController.text = "Err";
+              if (result.isInfinite) {
+                _textResultValueController.text = "Err";
+                _isDividedByZero = "Err";
+              } else {
+                _textResultValueController.text = result.toStringAsFixed(1);
+              }
             }
           }
           break;
@@ -187,14 +199,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding:
                                   const EdgeInsets.only(left: 8.0, right: 8.0),
                               child: TextField(
+                                maxLength: 8,
                                 controller: _textResultValueController,
                                 textAlign: TextAlign.end,
                                 decoration: InputDecoration(
                                     hintText: _isDividedByZero,
+                                    counterText: "",
                                     hintStyle: const TextStyle(
-                                        fontSize: 40, color: Colors.blueGrey)),
+                                        fontSize: 44, color: Colors.blueGrey)),
                                 style: const TextStyle(
-                                    fontSize: 40, color: Colors.blueGrey),
+                                    fontSize: 44, color: Colors.blueGrey),
                               ),
                             ),
                           ),
