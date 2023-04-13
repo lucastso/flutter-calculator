@@ -62,9 +62,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
       switch (pressedValue) {
         case "<":
-          var text = _textResultValueController.text.split("");
-          text.removeLast();
-          _textResultValueController.text = text.join();
+          if (_textResultValueController.text.length != 0) {
+            var text = _textResultValueController.text.split("");
+            text.removeLast();
+            _textResultValueController.text = text.join();
+          } else {
+            return;
+          }
+
           break;
         case "0":
         case "1":
@@ -76,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         case "7":
         case "8":
         case "9":
-          if (_textResultValueController.text.length != 13) {
+          if (_textResultValueController.text.length < 13) {
             if (_firstNumber != "" && pressedValue == "0") {
               _textResultValueController.text = _textResultValueController.text;
             } else {
@@ -112,19 +117,31 @@ class _MyHomePageState extends State<MyHomePage> {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) + double.parse(_secondNumber);
-              _textResultValueController.text = result.toStringAsFixed(1);
+              if (_firstNumber.contains(".") || _secondNumber.contains(".")) {
+                _textResultValueController.text = result.toStringAsFixed(1);
+              } else {
+                _textResultValueController.text = result.toStringAsFixed(0);
+              }
             }
           } else if (_sign == "-") {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) - double.parse(_secondNumber);
-              _textResultValueController.text = result.toStringAsFixed(1);
+              if (_firstNumber.contains(".") || _secondNumber.contains(".")) {
+                _textResultValueController.text = result.toStringAsFixed(1);
+              } else {
+                _textResultValueController.text = result.toStringAsFixed(0);
+              }
             }
           } else if (_sign == "*") {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) * double.parse(_secondNumber);
-              _textResultValueController.text = result.toStringAsFixed(1);
+              if (_firstNumber.contains(".") || _secondNumber.contains(".")) {
+                _textResultValueController.text = result.toStringAsFixed(1);
+              } else {
+                _textResultValueController.text = result.toStringAsFixed(0);
+              }
             }
           } else if (_sign == "/") {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
@@ -135,7 +152,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 _textResultValueController.text = "Err";
                 _isDividedByZero = "Err";
               } else {
-                _textResultValueController.text = result.toStringAsFixed(1);
+                if (_firstNumber.contains(".") || _secondNumber.contains(".")) {
+                  _textResultValueController.text = result.toStringAsFixed(1);
+                } else {
+                  _textResultValueController.text = result.toStringAsFixed(0);
+                }
               }
             }
           }
@@ -200,6 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding:
                                   const EdgeInsets.only(left: 8.0, right: 8.0),
                               child: TextField(
+                                enableInteractiveSelection: false,
                                 maxLength: 8,
                                 controller: _textResultValueController,
                                 textAlign: TextAlign.end,
