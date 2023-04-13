@@ -130,7 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
             if (_firstNumber.isNotEmpty && _secondNumber.isNotEmpty) {
               var result =
                   double.parse(_firstNumber) / double.parse(_secondNumber);
-              if (result.isInfinite) {
+              if (result.isInfinite ||
+                  (_firstNumber == "0" && _secondNumber == "0")) {
                 _textResultValueController.text = "Err";
                 _isDividedByZero = "Err";
               } else {
